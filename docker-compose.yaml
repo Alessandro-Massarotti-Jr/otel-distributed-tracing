@@ -1,0 +1,32 @@
+services:
+  category-service:
+    build: ./category-service
+    command: ["sh",start.sh]
+    environment:
+      - PORT=3001
+      - DATABASE_URL=postgresql://usuario:senha@postgres:5432/meubanco?schema=public
+    ports:
+      - 3001:3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - categories-network
+  postgres:
+    image: postgres:17.2-alpine
+    environment:
+      - POSTGRES_USER=usuario
+      - POSTGRES_PASSWORD=senha
+      - POSTGRES_DB=meubanco 
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - categories-network
+
+networks:
+  categories-network:

@@ -1,0 +1,23 @@
+{
+  "name": "category-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "db:seed": "node ./src/seeders/index.js",
+    "build": "npx tsc",
+    "start": "node ./src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "fastify": "^5.2.0",
+    "prisma": "^6.1.0"
+  }
+}
