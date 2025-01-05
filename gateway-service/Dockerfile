@@ -1,5 +1,5 @@
 # build
-FROM node:22-alpine as build
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY . .
 RUN npm install 
