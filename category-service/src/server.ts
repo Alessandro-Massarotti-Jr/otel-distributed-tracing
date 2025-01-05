@@ -1,3 +1,6 @@
+import "dotenv/config";
+import { setUpTracing } from "./config/otel";
+setUpTracing(process.env.SERVICE_NAME || "category-service");
 import fastify, { FastifyInstance } from "fastify";
 import routes from "./routes";
 import { CustomError } from "./errors/CustomError";

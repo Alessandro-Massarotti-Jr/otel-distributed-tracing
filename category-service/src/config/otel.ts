@@ -1,6 +1,6 @@
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
-import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify";
 import { Resource } from "@opentelemetry/resources";
 import {
   ATTR_SERVICE_NAME,
@@ -13,6 +13,7 @@ import {
 } from "@opentelemetry/sdk-trace-node";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { trace } from "@opentelemetry/api";
+import { PrismaInstrumentation } from "@prisma/instrumentation";
 
 export const setUpTracing = (serviceName: string) => {
   const provider = new NodeTracerProvider({
@@ -24,7 +25,11 @@ export const setUpTracing = (serviceName: string) => {
   });
   registerInstrumentations({
     tracerProvider: provider,
-    instrumentations: [new HttpInstrumentation(), new ExpressInstrumentation()],
+    instrumentations: [
+      new HttpInstrumentation(),
+      new FastifyInstrumentation(),
+      new PrismaInstrumentation(),
+    ],
   });
 
   const exporter = new OTLPTraceExporter({

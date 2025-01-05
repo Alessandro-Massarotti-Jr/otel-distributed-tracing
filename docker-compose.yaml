@@ -24,13 +24,16 @@ services:
     environment:
       - PORT=3001
       - DATABASE_URL=postgresql://usuario:senha@postgres:5432/meubanco?schema=public
+      - COLLECTOR_URL=http://jaegger:4318/v1/traces
+      - SERVICE_NAME=category-service
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - categories-network
       - gateway-network
-
+      - collector-network
+      
   product-service:
     build: ./product-service
     command: ["sh",start.sh]
@@ -47,7 +50,7 @@ services:
       - products-network
       - gateway-network
       - collector-network
-      
+
   postgres:
     image: postgres:17.2-alpine
     environment:
