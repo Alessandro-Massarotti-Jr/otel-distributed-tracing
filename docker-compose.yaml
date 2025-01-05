@@ -1,17 +1,31 @@
 services:
+  gateway-service:
+    build: ./gateway-service
+    command: ["sh",start.sh]
+    environment:
+      - PORT=3000
+      - CATEGORY_SERVICE_URL=http://category-service:3001
+      - PRODUCT_SERVICE_URL=http://product-service:3002
+    ports:
+      - 3000:3000
+    depends_on:
+      - category-service
+      - product-service
+    networks:
+      - gateway-network
+
   category-service:
     build: ./category-service
     command: ["sh",start.sh]
     environment:
       - PORT=3001
       - DATABASE_URL=postgresql://usuario:senha@postgres:5432/meubanco?schema=public
-    ports:
-      - 3001:3001
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - categories-network
+      - gateway-network
 
   product-service:
     build: ./product-service
@@ -20,13 +34,12 @@ services:
       - PORT=3002
       - MONGO_HOST=mongodb://usuario:senha@mongo:27017/product?authSource=admin
       - MONGO_PRODUCT_COLLECTION=products
-    ports:
-      - 3002:3002
     depends_on:
       mongo:
         condition: service_healthy
     networks:
       - products-network
+      - gateway-network
 
   postgres:
     image: postgres:17.2-alpine
@@ -56,3 +69,4 @@ services:
 networks:
   categories-network:
   products-network:
+  gateway-network:
