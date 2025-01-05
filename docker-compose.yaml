@@ -12,14 +12,28 @@ services:
         condition: service_healthy
     networks:
       - categories-network
+
+  product-service:
+    build: ./product-service
+    command: ["sh",start.sh]
+    environment:
+      - PORT=3002
+      - MONGO_HOST=mongodb://usuario:senha@mongo:27017/product?authSource=admin
+      - MONGO_PRODUCT_COLLECTION=products
+    ports:
+      - 3002:3002
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - products-network
+
   postgres:
     image: postgres:17.2-alpine
     environment:
       - POSTGRES_USER=usuario
       - POSTGRES_PASSWORD=senha
       - POSTGRES_DB=meubanco 
-    ports:
-      - 5432:5432
     healthcheck:
       test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
       interval: 10s
@@ -27,6 +41,18 @@ services:
       retries: 3
     networks:
       - categories-network
-
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: usuario
+      MONGO_INITDB_ROOT_PASSWORD: senha
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh","--eval","db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - products-network
 networks:
   categories-network:
+  products-network:
