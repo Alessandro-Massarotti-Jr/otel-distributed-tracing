@@ -38,13 +38,16 @@ services:
       - PORT=3002
       - MONGO_HOST=mongodb://usuario:senha@mongo:27017/product?authSource=admin
       - MONGO_PRODUCT_COLLECTION=products
+      - COLLECTOR_URL=http://jaegger:4318/v1/traces
+      - SERVICE_NAME=product-service
     depends_on:
       mongo:
         condition: service_healthy
     networks:
       - products-network
       - gateway-network
-
+      - collector-network
+      
   postgres:
     image: postgres:17.2-alpine
     environment:
